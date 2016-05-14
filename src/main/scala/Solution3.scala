@@ -3,38 +3,15 @@ import scala.collection.JavaConversions._
 // you can write to stdout for debugging purposes, e.g.
 // // println("this is a debug message")
 
- object Solution3 {
-
-   class Tree(var x: Int, var l: Tree, var r: Tree) {
-     //override def toString = s"Tree($x, ${if(l == null) null else l.toString}, ${if(r == null) null else r.toString})"
-   }
-
-   val example = new Tree(
-     5,
-     new Tree(3, new Tree(20, null, null), new Tree(21, null, null)),
-     new Tree(10, new Tree(1, null, null),  null)
-   )
-
-   def createExample(depth: Int): Tree = {
-     if (depth <= 0) {
-       null
-     } else {
-       val x = scala.util.Random.nextInt(10000)
-       new Tree(x, createExample(depth - 1), createExample(depth - 1))
-     }
-   }
-
+ object Solution3 extends Common {
    def main(args: Array[String]): Unit = {
-     println(solution(example))
+     println(solution(example3))
    }
 
    def solution(T: Tree): Int = {
      solutionHelper(List((0, T)), 0)
    }
 
-   def childWork[T](t: Tree)(f: Tree => T): List[T] = {
-     Option(t.l).map(f).toList ++ Option(t.r).map(f).toList
-   }
 
    @annotation.tailrec
    def solutionHelper(treesWithMax: List[(Int, Tree)], total: Int): Int = {
