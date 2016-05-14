@@ -25,12 +25,15 @@ import scala.collection.JavaConversions._
    }
 
    def main(args: Array[String]): Unit = {
-     //val ex = createExample(20)
      println(solution(example))
    }
 
    def solution(T: Tree): Int = {
      solutionHelper(List((0, T)), 0)
+   }
+
+   def childWork[T](t: Tree)(f: Tree => T): List[T] = {
+     Option(t.l).map(f).toList ++ Option(t.r).map(f).toList
    }
 
    @annotation.tailrec
@@ -41,17 +44,12 @@ import scala.collection.JavaConversions._
          if (t == null) {
            solutionHelper(ts, total)
          } else {
-           val visible = if (m > t.x) 0 else 1
-           val newMax  = m.max(t.x)
-           if (t.l != null && t.r != null) {
-             solutionHelper((newMax, t.l) :: (newMax, t.r) :: ts, total + visible)
-           } else if (t.l != null && t.r == null) {
-             solutionHelper((newMax, t.l) :: ts, total + visible)
-           } else if (t.l == null && t.r != null) {
-             solutionHelper((newMax, t.r) :: ts, total + visible)
-           } else {
-             solutionHelper((newMax, t.l) :: (newMax, t.r) :: ts, total + visible)
-           }
+           val visible  = if (m > t.x) 0 else 1
+           val newMax   = m.max(t.x)
+           val newTotal = total + visible
+           val newTreesWithMax = childWork(t)({(i: Tree) => (newMax, i)}) ++ ts
+
+           solutionHelper(newTreesWithMax, newTotal)
          }
      }
    }

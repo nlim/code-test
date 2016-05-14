@@ -28,7 +28,6 @@ import scala.collection.JavaConversions._
    }
 
  def main(args: Array[String]): Unit = {
-   //val ex = createExample(15)
    val ex = example
    println(solution(ex))
  }
@@ -54,20 +53,18 @@ import scala.collection.JavaConversions._
    trees match {
      case Nil               => results
      case (vals, t) :: ts   =>
-       val (parentMin, parentMax) = vals
        if (t == null) {
          solutionHelper2(ts, results)
        } else {
-         val newVals = (parentMin.min(t.x), parentMax.max(t.x))
-         if (t.l != null && t.r != null) {
-           solutionHelper2( (newVals, t.l) :: (newVals, t.r) :: ts, newVals :: results)
-         } else if (t.l != null && t.r == null) {
-           solutionHelper2( (newVals, t.l) :: ts, newVals :: results)
-         } else if (t.l == null && t.r != null) {
-           solutionHelper2( (newVals, t.r) :: ts, newVals :: results)
-         } else {
-           solutionHelper2(  ts, newVals :: results)
-         }
+         val (parentMin, parentMax) = vals
+         val newVals    = (parentMin.min(t.x), parentMax.max(t.x))
+         val newResults = newVals :: results
+         val newTrees =
+           Option(t.l).map(left  => (newVals, left)).toList ++
+           Option(t.r).map(right => (newVals, right)).toList ++
+           ts
+
+         solutionHelper2(newTrees, newResults)
        }
    }
  }

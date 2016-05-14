@@ -1,8 +1,5 @@
 import scala.collection.JavaConversions._
 
-// you can write to stdout for debugging purposes, e.g.
-// // println("this is a debug message")
-
  object Solution {
    class Tree(var x: Int, var l: Tree, var r: Tree)
 
@@ -13,7 +10,7 @@ import scala.collection.JavaConversions._
  }
 
  def solution(T: Tree): Int = {
-   val x = solutionHelper3( List(((0, 0), T)), Nil)
+   val x = solutionHelper3(List(((0, 0), T)), Nil)
    getMax(x)
  }
 
@@ -32,15 +29,13 @@ import scala.collection.JavaConversions._
        if (t == null) {
          results
        } else {
-         if (t.l != null && t.r != null) {
-           solutionHelper3(((parentLeft + 1, 0), t.l) :: ((0, parentRight + 1), t.r) :: ts, (parentLeft, parentRight) :: results)
-         } else if (t.l != null && t.r == null) {
-           solutionHelper3(((parentLeft + 1, 0), t.l) :: ts, (parentLeft, parentRight) :: results)
-         } else if (t.l == null && t.r != null) {
-           solutionHelper3(((0, parentRight + 1), t.r) :: ts, (parentLeft, parentRight) :: results)
-         } else {
-           solutionHelper3(ts, (parentLeft, parentRight) :: results)
-         }
+         val newResults = (parentLeft, parentRight) :: results
+         val newValues =
+           Option(t.l).map(left  => ((parentLeft + 1,  0), left)).toList ++
+           Option(t.r).map(right => ((0, parentRight + 1), right)).toList ++
+           ts
+
+         solutionHelper3(newValues, newResults)
        }
    }
  }
